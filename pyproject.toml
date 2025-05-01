@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "financial-portfolio-manager"
+version = "0.1.0"
+description = ""
+authors = ["kenk67 <rahulmg1899i@gmail.com>"]
+readme = "README.md"
+packages = [{include = "financial_portfolio_manager"}]
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
