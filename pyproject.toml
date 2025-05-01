@@ -5,10 +5,16 @@ description = ""
 authors = ["kenk67 <rahulmg1899i@gmail.com>"]
 readme = "README.md"
 packages = [{include = "financial_portfolio_manager"}]
-package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.11"
+matplotlib = "^3.10.1"
+numpy = "^2.2.5"
+pandas = "^2.2.3"
+pytest = "^8.3.5"
+pytest-cov = "^6.1.1"
+black = "^25.1.0"
+flake8 = "^7.2.0"
 
 
 [build-system]
