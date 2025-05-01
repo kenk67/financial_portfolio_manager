@@ -4,6 +4,7 @@ from enum import Enum, auto
 
 class TransactionType(Enum):
     """Enum for transaction types."""
+
     BUY = auto()
     SELL = auto()
     DIVIDEND = auto()
@@ -72,5 +73,7 @@ class Transaction:
 
     def __str__(self):
         action = "Bought" if self._transaction_type == TransactionType.BUY else "Sold"
-        return (f"{action} {self._quantity} of {self._asset_symbol} @ ${self._price:.2f} "
-                f"on {self._date.strftime('%Y-%m-%d')} (Total: ${self.total_value:.2f})")
+        return (
+            f"{action} {self._quantity} of {self._asset_symbol} @ ${self._price:.2f} "
+            f"on {self._date.strftime('%Y-%m-%d')} (Total: ${self.total_value:.2f})"
+        )

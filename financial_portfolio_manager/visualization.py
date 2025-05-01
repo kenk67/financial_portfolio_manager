@@ -1,11 +1,10 @@
-import matplotlib.pyplot as plt
-from matplotlib import style
-import numpy as np
 from datetime import datetime, timedelta
+
+import matplotlib.pyplot as plt
 import pandas as pd
 
 # Set the style for plots
-tyle.use('ggplot')
+plt.style.use("ggplot")
 
 
 class PortfolioVisualizer:
@@ -33,16 +32,18 @@ class PortfolioVisualizer:
         for date in dates:
             total_value = self._portfolio.cash_balance
             for symbol, (asset, quantity) in holdings.items():
-                hist_prices = self._data_provider.get_historical_prices(symbol, date, date)
+                hist_prices = self._data_provider.get_historical_prices(
+                    symbol, date, date
+                )
                 price = hist_prices.get(date, asset.current_price)
                 total_value += price * quantity
             total_values.append(total_value)
 
         fig = plt.figure(figsize=(12, 6))
-        plt.plot(dates, total_values, 'b-', linewidth=2)
-        plt.title(f'Portfolio Value History - Last {days} Days')
-        plt.xlabel('Date')
-        plt.ylabel('Value ($)')
+        plt.plot(dates, total_values, "b-", linewidth=2)
+        plt.title(f"Portfolio Value History - Last {days} Days")
+        plt.xlabel("Date")
+        plt.ylabel("Value ($)")
         plt.grid(True)
         plt.gcf().autofmt_xdate()
         self._add_transaction_markers(dates, total_values)
@@ -65,7 +66,9 @@ class PortfolioVisualizer:
         fig = plt.figure(figsize=(12, 6))
 
         for symbol, (asset, quantity) in holdings.items():
-            hist_prices = self._data_provider.get_historical_prices(symbol, start_date, end_date)
+            hist_prices = self._data_provider.get_historical_prices(
+                symbol, start_date, end_date
+            )
             if hist_prices:
                 sorted_dates = sorted(hist_prices.keys())
                 prices = [hist_prices[date] for date in sorted_dates]
@@ -73,9 +76,9 @@ class PortfolioVisualizer:
                 normalized = [(p / base_price - 1) * 100 for p in prices]
                 plt.plot(sorted_dates, normalized, label=f"{asset.name} ({symbol})")
 
-        plt.title(f'Asset Performance - Last {days} Days (% Change)')
-        plt.xlabel('Date')
-        plt.ylabel('% Change')
+        plt.title(f"Asset Performance - Last {days} Days (% Change)")
+        plt.xlabel("Date")
+        plt.ylabel("% Change")
         plt.grid(True)
         plt.legend()
         plt.gcf().autofmt_xdate()
@@ -103,7 +106,9 @@ class PortfolioVisualizer:
 
         price_data = {}
         for symbol in symbols:
-            hist_prices = self._data_provider.get_historical_prices(symbol, start_date, end_date)
+            hist_prices = self._data_provider.get_historical_prices(
+                symbol, start_date, end_date
+            )
             if hist_prices:
                 dates = sorted(hist_prices.keys())
                 prices = [hist_prices[date] for date in dates]
@@ -117,16 +122,22 @@ class PortfolioVisualizer:
         corr_matrix = returns.corr()
 
         fig = plt.figure(figsize=(10, 8))
-        plt.imshow(corr_matrix, cmap='coolwarm', vmin=-1, vmax=1)
+        plt.imshow(corr_matrix, cmap="coolwarm", vmin=-1, vmax=1)
         plt.colorbar()
         plt.xticks(range(len(symbols)), symbols, rotation=45)
         plt.yticks(range(len(symbols)), symbols)
         for i in range(len(symbols)):
             for j in range(len(symbols)):
                 val = corr_matrix.iloc[i, j]
-                plt.text(j, i, f'{val:.2f}', ha='center', va='center',
-                         color='black' if abs(val) < 0.5 else 'white')
-        plt.title('Asset Price Correlation Matrix')
+                plt.text(
+                    j,
+                    i,
+                    f"{val:.2f}",
+                    ha="center",
+                    va="center",
+                    color="black" if abs(val) < 0.5 else "white",
+                )
+        plt.title("Asset Price Correlation Matrix")
         if save_path:
             fig.savefig(save_path)
         plt.tight_layout()
@@ -144,9 +155,9 @@ class PortfolioVisualizer:
         sizes = list(allocation.values())
 
         fig = plt.figure(figsize=(10, 8))
-        plt.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90)
-        plt.axis('equal')
-        plt.title(f'Portfolio Asset Allocation - {self._portfolio.name}')
+        plt.pie(sizes, labels=labels, autopct="%1.1f%%", startangle=90)
+        plt.axis("equal")
+        plt.title(f"Portfolio Asset Allocation - {self._portfolio.name}")
         if save_path:
             fig.savefig(save_path)
         plt.tight_layout()
@@ -155,6 +166,7 @@ class PortfolioVisualizer:
     def _add_transaction_markers(self, dates, values):
         """Add markers for buy/sell transactions."""
         from .transaction import TransactionType
+
         transactions = self._portfolio.get_transactions()
         if not dates:
             return
@@ -162,22 +174,30 @@ class PortfolioVisualizer:
         relevant = [t for t in transactions if start_date <= t.date <= end_date]
 
         # Buys
-        buy_dates = [t.date for t in relevant if t.transaction_type == TransactionType.BUY]
+        buy_dates = [
+            t.date for t in relevant if t.transaction_type == TransactionType.BUY
+        ]
         if buy_dates:
             buy_vals = []
             for d in buy_dates:
-                idx = min(range(len(dates)), key=lambda i: abs((dates[i] - d).total_seconds()))
+                idx = min(
+                    range(len(dates)), key=lambda i: abs((dates[i] - d).total_seconds())
+                )
                 buy_vals.append(values[idx])
-            plt.plot(buy_dates, buy_vals, 'g^', markersize=10, label='Buy')
+            plt.plot(buy_dates, buy_vals, "g^", markersize=10, label="Buy")
 
         # Sells
-        sell_dates = [t.date for t in relevant if t.transaction_type == TransactionType.SELL]
+        sell_dates = [
+            t.date for t in relevant if t.transaction_type == TransactionType.SELL
+        ]
         if sell_dates:
             sell_vals = []
             for d in sell_dates:
-                idx = min(range(len(dates)), key=lambda i: abs((dates[i] - d).total_seconds()))
+                idx = min(
+                    range(len(dates)), key=lambda i: abs((dates[i] - d).total_seconds())
+                )
                 sell_vals.append(values[idx])
-            plt.plot(sell_dates, sell_vals, 'rv', markersize=10, label='Sell')
+            plt.plot(sell_dates, sell_vals, "rv", markersize=10, label="Sell")
 
         if buy_dates or sell_dates:
             plt.legend()

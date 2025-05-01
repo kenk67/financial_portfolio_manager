@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
-from .transaction import Transaction, TransactionType
+
+from financial_portfolio_manager.transaction import Transaction, TransactionType
 
 
 class BrokerInterface(ABC):
@@ -52,14 +53,16 @@ class SimpleBroker(BrokerInterface):
 
         # Check if portfolio has enough cash
         if portfolio.cash_balance < total_cost:
-            raise ValueError(f"Insufficient funds. Need ${total_cost:.2f}, have ${portfolio.cash_balance:.2f}")
+            raise ValueError(
+                f"Insufficient funds. Need ${total_cost:.2f}, have ${portfolio.cash_balance:.2f}"
+            )
 
         # Create transaction
         transaction = Transaction(
             asset_symbol=asset_symbol,
             transaction_type=TransactionType.BUY,
             quantity=quantity,
-            price=price
+            price=price,
         )
         transaction.fees = self._fee_per_trade
 
@@ -91,7 +94,9 @@ class SimpleBroker(BrokerInterface):
 
         asset, owned_quantity = holdings[asset_symbol]
         if quantity > owned_quantity:
-            raise ValueError(f"Insufficient quantity. Have {owned_quantity}, trying to sell {quantity}")
+            raise ValueError(
+                f"Insufficient quantity. Have {owned_quantity}, trying to sell {quantity}"
+            )
 
         # Calculate proceeds
         proceeds = quantity * price - self._fee_per_trade
@@ -101,7 +106,7 @@ class SimpleBroker(BrokerInterface):
             asset_symbol=asset_symbol,
             transaction_type=TransactionType.SELL,
             quantity=quantity,
-            price=price
+            price=price,
         )
         transaction.fees = self._fee_per_trade
 

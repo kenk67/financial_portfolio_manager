@@ -1,20 +1,12 @@
-import os
-import sys
-import matplotlib.pyplot as plt
+from financial_portfolio_manager.asset import Stock, Bond
+from financial_portfolio_manager.broker import SimpleBroker
+from financial_portfolio_manager.data_provider import DataProviderFactory
+from financial_portfolio_manager.portfolio import Portfolio
+from financial_portfolio_manager.transaction import Transaction, TransactionType
+from financial_portfolio_manager.visualization import PortfolioVisualizer
 
-
-from datetime import datetime, timedelta
-
-# Add the project directory to Python path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-# Import our modules
-from portfolio_manager.asset import Asset, Stock, Bond
-from portfolio_manager.transaction import Transaction, TransactionType
-from portfolio_manager.portfolio import Portfolio
-from portfolio_manager.broker import SimpleBroker
-from portfolio_manager.data_provider import DataProviderFactory
-from portfolio_manager.visualization import PortfolioVisualizer
+# # Add the project directory to Python path
+# sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 class FinancialPortfolioManager:
@@ -27,8 +19,7 @@ class FinancialPortfolioManager:
         """Initialize the application."""
         # Create dependencies
         self._data_provider = DataProviderFactory.create_provider(
-            data_provider_type,
-            api_key=api_key
+            data_provider_type, api_key=api_key
         )
         self._broker = SimpleBroker("Sample Broker", fee_per_trade=9.99)
         self._portfolios = {}  # Dictionary to store multiple portfolios
@@ -87,7 +78,8 @@ class FinancialPortfolioManager:
 
         # Execute the buy transaction using the broker
         transaction = self._broker.execute_buy(
-            portfolio, asset.symbol, quantity, current_price)
+            portfolio, asset.symbol, quantity, current_price
+        )
 
         return transaction
 
@@ -110,7 +102,8 @@ class FinancialPortfolioManager:
 
         # Execute the sell transaction using the broker
         transaction = self._broker.execute_sell(
-            portfolio, asset_symbol, quantity, current_price)
+            portfolio, asset_symbol, quantity, current_price
+        )
 
         return transaction
 
@@ -127,7 +120,7 @@ class FinancialPortfolioManager:
             asset_symbol="CASH",
             transaction_type=TransactionType.DEPOSIT,
             quantity=1,
-            price=amount
+            price=amount,
         )
         portfolio.add_transaction(transaction)
 
@@ -148,7 +141,7 @@ class FinancialPortfolioManager:
             asset_symbol="CASH",
             transaction_type=TransactionType.WITHDRAWAL,
             quantity=1,
-            price=amount
+            price=amount,
         )
         portfolio.add_transaction(transaction)
 
@@ -204,12 +197,14 @@ class FinancialPortfolioManager:
 
         # In a real application, this would serialize the portfolio to JSON or another format
         # For this example, we'll just print its summary
-        with open(file_path, 'w') as f:
+        with open(file_path, "w") as f:
             f.write(str(portfolio))
             f.write("\n\nHoldings:\n")
 
             holdings = portfolio.get_holdings()
             for symbol, (asset, quantity) in holdings.items():
-                f.write(f"{quantity} shares of {asset.name} ({symbol}) @ ${asset.current_price:.2f}\n")
+                f.write(
+                    f"{quantity} shares of {asset.name} ({symbol}) @ ${asset.current_price:.2f}\n"
+                )
 
             f.write(f"\nCash balance: ${portfolio.cash_balance:.2f}\n")

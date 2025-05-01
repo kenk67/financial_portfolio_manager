@@ -5,14 +5,15 @@ Demo script showing usage of the Financial Portfolio Manager.
 
 import os
 import sys
-import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
+
+import matplotlib.pyplot as plt
 
 # Add the project directory to Python path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Import our main application
-from portfolio_manager.main import FinancialPortfolioManager
+from financial_portfolio_manager.main import FinancialPortfolioManager
 
 
 def main():
@@ -39,19 +40,25 @@ def main():
     # Buy Apple stock
     apple_stock = app.create_stock("AAPL", "Apple Inc.")
     quantity = 10
-    print(f"  - Buying {quantity} shares of {apple_stock.name} @ ${apple_stock.current_price:.2f}")
+    print(
+        f"  - Buying {quantity} shares of {apple_stock.name} @ ${apple_stock.current_price:.2f}"
+    )
     app.buy_asset(portfolio_name, apple_stock, quantity)
 
     # Buy Microsoft stock
     msft_stock = app.create_stock("MSFT", "Microsoft Corp.")
     quantity = 5
-    print(f"  - Buying {quantity} shares of {msft_stock.name} @ ${msft_stock.current_price:.2f}")
+    print(
+        f"  - Buying {quantity} shares of {msft_stock.name} @ ${msft_stock.current_price:.2f}"
+    )
     app.buy_asset(portfolio_name, msft_stock, quantity)
 
     # Buy Amazon stock
     amzn_stock = app.create_stock("AMZN", "Amazon.com Inc.")
     quantity = 3
-    print(f"  - Buying {quantity} shares of {amzn_stock.name} @ ${amzn_stock.current_price:.2f}")
+    print(
+        f"  - Buying {quantity} shares of {amzn_stock.name} @ ${amzn_stock.current_price:.2f}"
+    )
     app.buy_asset(portfolio_name, amzn_stock, quantity)
 
     # Create a bond with hypothetical data
@@ -61,7 +68,7 @@ def main():
         name="5-Year Treasury",
         face_value=1000.0,
         coupon_rate=0.025,  # 2.5%
-        maturity_date=maturity_date
+        maturity_date=maturity_date,
     )
     quantity = 5
     print(f"  - Buying {quantity} of {bond.name} @ ${bond.current_price:.2f}")

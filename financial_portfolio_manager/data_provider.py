@@ -1,7 +1,7 @@
-import requests
 from abc import ABC, abstractmethod
 from datetime import datetime, timedelta
-import json
+
+import requests
 
 
 class DataProviderInterface(ABC):
@@ -27,16 +27,12 @@ class AlphaVantageProvider(DataProviderInterface):
     """Implementation using Alpha Vantage API."""
 
     def __init__(self, api_key):
-        self._api_key = 'API KEY'
+        self._api_key = "API KEY"
         self._base_url = "https://www.alphavantage.co/query"
 
     def get_current_price(self, symbol):
         """Get the current market price for a symbol."""
-        params = {
-            "function": "GLOBAL_QUOTE",
-            "symbol": symbol,
-            "apikey": self._api_key
-        }
+        params = {"function": "GLOBAL_QUOTE", "symbol": symbol, "apikey": self._api_key}
 
         try:
             response = requests.get(self._base_url, params=params)
@@ -62,7 +58,7 @@ class AlphaVantageProvider(DataProviderInterface):
             "function": "TIME_SERIES_DAILY",
             "symbol": symbol,
             "outputsize": "full",
-            "apikey": self._api_key
+            "apikey": self._api_key,
         }
 
         try:
@@ -101,11 +97,7 @@ class AlphaVantageProvider(DataProviderInterface):
 
     def get_company_info(self, symbol):
         """Get company overview information."""
-        params = {
-            "function": "OVERVIEW",
-            "symbol": symbol,
-            "apikey": self._api_key
-        }
+        params = {"function": "OVERVIEW", "symbol": symbol, "apikey": self._api_key}
 
         try:
             response = requests.get(self._base_url, params=params)
@@ -132,18 +124,18 @@ class MockDataProvider(DataProviderInterface):
             "AAPL": {
                 "name": "Apple Inc.",
                 "current_price": 175.50,
-                "historical": self._generate_mock_history(150.0, 180.0)
+                "historical": self._generate_mock_history(150.0, 180.0),
             },
             "MSFT": {
                 "name": "Microsoft Corporation",
                 "current_price": 305.25,
-                "historical": self._generate_mock_history(280.0, 310.0)
+                "historical": self._generate_mock_history(280.0, 310.0),
             },
             "AMZN": {
                 "name": "Amazon.com Inc.",
                 "current_price": 132.80,
-                "historical": self._generate_mock_history(120.0, 140.0)
-            }
+                "historical": self._generate_mock_history(120.0, 140.0),
+            },
         }
 
     def _generate_mock_history(self, min_price, max_price):
@@ -176,8 +168,11 @@ class MockDataProvider(DataProviderInterface):
 
         # Filter historical data for the date range
         historical = self._mock_data[symbol]["historical"]
-        return {date: price for date, price in historical.items()
-                if start_date <= date <= end_date}
+        return {
+            date: price
+            for date, price in historical.items()
+            if start_date <= date <= end_date
+        }
 
     def get_company_info(self, symbol):
         """Get mock company information."""
@@ -191,7 +186,7 @@ class MockDataProvider(DataProviderInterface):
             "Description": f"Mock description for {self._mock_data[symbol]['name']}",
             "Sector": "Technology",
             "Industry": "Consumer Electronics",
-            "MarketCapitalization": "2000000000"
+            "MarketCapitalization": "2000000000",
         }
 
 

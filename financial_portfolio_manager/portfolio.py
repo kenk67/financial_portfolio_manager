@@ -67,7 +67,9 @@ class Portfolio:
 
         current_asset, current_quantity = self._holdings[symbol]
         if quantity > current_quantity:
-            raise ValueError(f"Cannot remove {quantity} of {symbol}, only have {current_quantity}")
+            raise ValueError(
+                f"Cannot remove {quantity} of {symbol}, only have {current_quantity}"
+            )
 
         # Update holdings
         if quantity == current_quantity:
@@ -81,7 +83,10 @@ class Portfolio:
 
     def get_holdings(self):
         """Get a copy of all holdings."""
-        return {symbol: (asset, quantity) for symbol, (asset, quantity) in self._holdings.items()}
+        return {
+            symbol: (asset, quantity)
+            for symbol, (asset, quantity) in self._holdings.items()
+        }
 
     def get_transactions(self, from_date=None, to_date=None, asset_symbol=None):
         """Get filtered transactions."""
@@ -98,8 +103,10 @@ class Portfolio:
 
     def total_value(self):
         """Calculate the total portfolio value including cash."""
-        asset_value = sum(asset.current_price * quantity
-                          for symbol, (asset, quantity) in self._holdings.items())
+        asset_value = sum(
+            asset.current_price * quantity
+            for symbol, (asset, quantity) in self._holdings.items()
+        )
         return asset_value + self._cash_balance
 
     def asset_allocation(self):
@@ -129,7 +136,9 @@ class Portfolio:
         return 0.0  # Placeholder
 
     def __str__(self):
-        return (f"Portfolio: {self._name}\nOwner: {self._owner}\n"
-                f"Total Value: ${self.total_value():.2f}\n"
-                f"Cash Balance: ${self._cash_balance:.2f}\n"
-                f"Number of Assets: {len(self._holdings)}")
+        return (
+            f"Portfolio: {self._name}\nOwner: {self._owner}\n"
+            f"Total Value: ${self.total_value():.2f}\n"
+            f"Cash Balance: ${self._cash_balance:.2f}\n"
+            f"Number of Assets: {len(self._holdings)}"
+        )

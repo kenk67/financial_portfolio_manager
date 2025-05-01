@@ -1,6 +1,7 @@
 import unittest
 from datetime import datetime
-from portfolio_manager.asset import Asset, Stock, Bond
+
+from financial_portfolio_manager.asset import Asset, Stock, Bond
 
 
 class TestAsset(unittest.TestCase):
@@ -87,5 +88,5 @@ class TestBond(unittest.TestCase):
         self.assertGreater(ytm, 0)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

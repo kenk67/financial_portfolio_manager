@@ -101,9 +101,10 @@ class Bond(Asset):
         # Simplified calculation for illustration
         # In a real application, this would be more complex
         if self.current_price > 0:
-            return (self._coupon_rate * self._face_value +
-                    (self._face_value - self.current_price) /
-                    self._remaining_years()) / self.current_price
+            return (
+                self._coupon_rate * self._face_value
+                + (self._face_value - self.current_price) / self._remaining_years()
+            ) / self.current_price
         return 0
 
     def _remaining_years(self):
