@@ -1,7 +1,7 @@
 import unittest
 from datetime import datetime
 
-from financial_portfolio_manager.asset import Asset, Stock, Bond
+from src.financial_portfolio_manager.asset import Asset, Stock, Bond
 
 
 class TestAsset(unittest.TestCase):

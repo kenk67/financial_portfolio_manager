@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from financial_portfolio_manager.transaction import Transaction, TransactionType
+from src.financial_portfolio_manager.transaction import Transaction, TransactionType
 
 
 class BrokerInterface(ABC):

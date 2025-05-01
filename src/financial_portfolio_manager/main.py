@@ -1,9 +1,9 @@
-from financial_portfolio_manager.asset import Stock, Bond
-from financial_portfolio_manager.broker import SimpleBroker
-from financial_portfolio_manager.data_provider import DataProviderFactory
-from financial_portfolio_manager.portfolio import Portfolio
-from financial_portfolio_manager.transaction import Transaction, TransactionType
-from financial_portfolio_manager.visualization import PortfolioVisualizer
+from src.financial_portfolio_manager.asset import Stock, Bond
+from src.financial_portfolio_manager.broker import SimpleBroker
+from src.financial_portfolio_manager.data_provider import DataProviderFactory
+from src.financial_portfolio_manager.portfolio import Portfolio
+from src.financial_portfolio_manager.transaction import Transaction, TransactionType
+from src.financial_portfolio_manager.visualization import PortfolioVisualizer
 
 # # Add the project directory to Python path
 # sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
