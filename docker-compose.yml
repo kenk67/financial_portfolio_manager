@@ -1,0 +1,24 @@
+name: financial-portfolio-manager
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    env_file:
+      - path: ./.env
+        required: true
+
+  tester:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    env_file:
+      - path: ./.env
+        required: true
+    command:
+      - pytest -vvs
