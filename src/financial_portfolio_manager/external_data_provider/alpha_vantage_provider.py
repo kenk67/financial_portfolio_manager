@@ -1,101 +1,72 @@
-from datetime import datetime
+from datetime import date
 
 import httpx
 
 from src.financial_portfolio_manager.external_data_provider.provider_base_class import (
     DataProviderInterface,
 )
-from src.financial_portfolio_manager.settings import get_settings
+from src.financial_portfolio_manager.models.alpha_vantage import (
+    GlobalQuote,
+    CompanyOverview,
+    AlphaVantageTimeSeriesDaily,
+)
+from src.financial_portfolio_manager.settings import get_settings, get_auth_settings
 
 settings = get_settings()
+auth_settings = get_auth_settings()
 
 
 class AlphaVantageProvider(DataProviderInterface):
     """Implementation using Alpha Vantage API."""
 
     def __init__(self):
-        self._base_urls = settings.DATA_PROVIDER_URL.get("ALPHA_VANTAGE")
+        self._base_url = settings.DATA_PROVIDER_URL.get("ALPHA_VANTAGE")
 
-    def get_current_price(self, symbol):
-        """Get the current market price for a symbol."""
-        params = {"function": "GLOBAL_QUOTE", "symbol": symbol, "apikey": self._api_key}
-
-        try:
-            response = httpx.get(self._base_url, params=params)
-            data = response.json()
-
-            # Check for error responses
-            if "Error Message" in data:
-                raise ValueError(f"API Error: {data['Error Message']}")
-
-            # Extract price from response
-            if "Global Quote" in data and "05. price" in data["Global Quote"]:
-                return float(data["Global Quote"]["05. price"])
-            else:
-                raise ValueError(f"Unexpected API response format: {data}")
-        except Exception as e:
-            print(f"Error fetching price for {symbol}: {str(e)}")
-            # Return None or a default value in case of error
-            return None
-
-    def get_historical_prices(self, symbol, start_date, end_date):
-        """Get historical daily prices for a date range."""
+    def get_api_data(self, function: str, symbol: str, **kwargs) -> dict:
+        """Get API data."""
         params = {
-            "function": "TIME_SERIES_DAILY",
+            "function": function,
             "symbol": symbol,
-            "outputsize": "full",
-            "apikey": self._api_key,
+            "apikey": auth_settings.ALPHA_VANTAGE_API_KEY,
         }
 
+        if "outputsize" in kwargs:
+            params["outputsize"] = kwargs["outputsize"]
+
         try:
             response = httpx.get(self._base_url, params=params)
-            data = response.json()
+            response.raise_for_status()
+            return response.json()
 
-            # Check for error responses
-            if "Error Message" in data:
-                raise ValueError(f"API Error: {data['Error Message']}")
-
-            # Extract and filter historical data
-            if "Time Series (Daily)" in data:
-                time_series = data["Time Series (Daily)"]
-
-                # Convert dates to strings in the format used by the API
-                start_str = start_date.strftime("%Y-%m-%d")
-                end_str = end_date.strftime("%Y-%m-%d")
-
-                # Filter and convert to the desired format
-                historical_prices = {}
-                for date_str, values in time_series.items():
-                    # Only include dates within our range
-                    if start_str <= date_str <= end_str:
-                        # Convert the date string to a datetime object
-                        date_obj = datetime.strptime(date_str, "%Y-%m-%d")
-                        # Store the closing price
-                        historical_prices[date_obj] = float(values["4. close"])
-
-                return historical_prices
-            else:
-                raise ValueError(f"Unexpected API response format: {data}")
         except Exception as e:
-            print(f"Error fetching historical prices for {symbol}: {str(e)}")
-            # Return empty dict in case of error
-            return {}
+            raise e
 
-    def get_company_info(self, symbol):
+    def get_current_price(self, symbol: str) -> float:
+        """Get the current market price for a symbol."""
+
+        response_data = self.get_api_data(function="GLOBAL_QUOTE", symbol=symbol)
+        data = GlobalQuote(**response_data)
+        return data.price
+
+    def get_historical_prices(self, symbol, start_date: date, end_date: date) -> dict:
+        """Get historical daily close prices for a date range."""
+
+        response_data = self.get_api_data(
+            function="TIME_SERIES_DAILY", symbol=symbol, outputsize="compact"
+        )
+
+        data = AlphaVantageTimeSeriesDaily(**response_data)
+        historical_prices = {
+            daily_date: data.close
+            for daily_date, data in data.time_series.items()
+            if start_date <= daily_date <= end_date
+        }
+
+        return historical_prices
+
+    def get_company_info(self, symbol: str) -> CompanyOverview:
         """Get company overview information."""
-        params = {"function": "OVERVIEW", "symbol": symbol, "apikey": self._api_key}
 
-        try:
-            response = httpx.get(self._base_url, params=params)
-            data = response.json()
-
-            # Check for error responses
-            if "Error Message" in data:
-                raise ValueError(f"API Error: {data['Error Message']}")
-
-            # Return the full company info
-            return data
-        except Exception as e:
-            print(f"Error fetching company info for {symbol}: {str(e)}")
-            # Return empty dict in case of error
-            return {}
+        response_data = self.get_api_data(function="OVERVIEW", symbol=symbol)
+        data = CompanyOverview(**response_data)
+        return data

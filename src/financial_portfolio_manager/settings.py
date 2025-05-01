@@ -28,3 +28,7 @@ class AuthSettings(BaseSettings):
 
 def get_settings():
     return Settings()
+
+
+def get_auth_settings():
+    return AuthSettings()
