@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Import our main application
-from src.financial_portfolio_manager import FinancialPortfolioManager
+from src.financial_portfolio_manager.main import FinancialPortfolioManager
 
 
 def main():

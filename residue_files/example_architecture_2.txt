@@ -1,0 +1,24 @@
+┌───────────────────────┐
+│                       │
+│    Main Application   │◄──────── User Interaction
+│                       │
+└───────────┬───────────┘
+            │
+            │ Orchestrates
+            ▼
+┌───────────────────────┐         ┌───────────────────────┐
+│                       │ Queries │                       │
+│    Portfolio Class    │◄────────┤   Data Provider       │
+│                       │ Data    │   (Mock/AlphaVantage) │
+└┬─────────────┬────────┘         └───────────────────────┘
+ │             │                             ▲
+ │             │                             │
+ │ Manages     │ Contains          Supplies  │
+ │             │                    Market   │
+ ▼             ▼                     Data    │
+┌─────────┐ ┌────────────┐                   │
+│         │ │            │         ┌─────────┴───────────┐
+│ Assets  │ │Transactions│◄────────┤                     │
+│         │ │            │ Creates │   Broker Interface  │
+└─────────┘ └────────────┘         │   (SimpleBroker)    │
+                                   └─────────────────────┘

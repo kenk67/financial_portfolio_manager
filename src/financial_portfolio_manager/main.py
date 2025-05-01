@@ -1,6 +1,8 @@
 from src.financial_portfolio_manager.asset import Stock, Bond
 from src.financial_portfolio_manager.broker import SimpleBroker
-from src.financial_portfolio_manager.data_provider import DataProviderFactory
+from src.financial_portfolio_manager.external_data_provider.provider_base_class import (
+    DataProviderFactory,
+)
 from src.financial_portfolio_manager.portfolio import Portfolio
 from src.financial_portfolio_manager.transaction import Transaction, TransactionType
 from src.financial_portfolio_manager.visualization import PortfolioVisualizer
