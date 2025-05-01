@@ -1,0 +1,40 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - path: ./.env
+        required: true
+    volumes:
+      - .:/var/app
+    working_dir: /var/app
+
+
+  database:
+    command: "-jar DynamoDBLocal.jar -sharedDb -disableTelemetry"
+    image: "amazon/dynamodb-local:latest"
+    container_name: dynamodb-local
+    ports:
+      - "127.0.0.1:8000:8000"
+
+
+  tester:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - path: ./.env
+        required: true
+    volumes:
+      - .:/var/app
+    working_dir: /var/app
+    # command should be list then string,
+    #without the square brackets it will only take the first element before the space
+    # use it will `-` in the next line, only "string" is allowed and no [],
+    # can also be a direct command with `-`
+    # can also use && with `-`
+    # does not have a default shell using echo $SHELL
+    # Current shell is `bash` using echo $0
+    command:
+      - pytest -vvs
