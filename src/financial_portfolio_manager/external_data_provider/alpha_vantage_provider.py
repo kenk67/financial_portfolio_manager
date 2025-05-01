@@ -1,6 +1,6 @@
 from datetime import datetime
 
-import requests
+import httpx
 
 from src.financial_portfolio_manager.external_data_provider.provider_base_class import (
     DataProviderInterface,
@@ -21,7 +21,7 @@ class AlphaVantageProvider(DataProviderInterface):
         params = {"function": "GLOBAL_QUOTE", "symbol": symbol, "apikey": self._api_key}
 
         try:
-            response = requests.get(self._base_url, params=params)
+            response = httpx.get(self._base_url, params=params)
             data = response.json()
 
             # Check for error responses
@@ -48,7 +48,7 @@ class AlphaVantageProvider(DataProviderInterface):
         }
 
         try:
-            response = requests.get(self._base_url, params=params)
+            response = httpx.get(self._base_url, params=params)
             data = response.json()
 
             # Check for error responses
@@ -86,7 +86,7 @@ class AlphaVantageProvider(DataProviderInterface):
         params = {"function": "OVERVIEW", "symbol": symbol, "apikey": self._api_key}
 
         try:
-            response = requests.get(self._base_url, params=params)
+            response = httpx.get(self._base_url, params=params)
             data = response.json()
 
             # Check for error responses
