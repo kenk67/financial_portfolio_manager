@@ -13,5 +13,18 @@ class Settings(BaseSettings):
     )
 
 
+class AuthSettings(BaseSettings):
+    """Authentication settings using Pydantic."""
+
+    ALPHA_VANTAGE_API_KEY: str = Field(
+        default="dummy",
+        description="API key for Alpha Vantage Financial Data Provider",
+    )
+    GEMINI_API_KEY: str = Field(
+        default="dummy",
+        description="API key for Gemini LLM Provider",
+    )
+
+
 def get_settings():
     return Settings()
