@@ -4,3 +4,4 @@
 .env.templ
 poetry.lock
 *.csv
+task.md
