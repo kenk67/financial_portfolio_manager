@@ -1,6 +1,7 @@
-from datetime import date
+from typing import Union
 
 import httpx
+from httpx import Response
 
 from src.financial_portfolio_manager.external_data_provider.provider_base_class import (
     DataProviderInterface,
@@ -22,7 +23,9 @@ class AlphaVantageProvider(DataProviderInterface):
     def __init__(self):
         self._base_url = settings.DATA_PROVIDER_URL.get("ALPHA_VANTAGE")
 
-    def get_api_data(self, function: str, symbol: str, **kwargs) -> dict:
+    def get_api_data(
+        self, function: str, symbol: str, **kwargs
+    ) -> Union[dict, Response]:
         """Get API data."""
         params = {
             "function": function,
@@ -32,6 +35,16 @@ class AlphaVantageProvider(DataProviderInterface):
 
         if "outputsize" in kwargs:
             params["outputsize"] = kwargs["outputsize"]
+
+        if "datatype" in kwargs:
+            params["datatype"] = kwargs["datatype"]
+            try:
+                response = httpx.get(self._base_url, params=params)
+                response.raise_for_status()
+                return response
+
+            except Exception as e:
+                raise e
 
         try:
             response = httpx.get(self._base_url, params=params)
@@ -48,8 +61,18 @@ class AlphaVantageProvider(DataProviderInterface):
         data = GlobalQuote(**response_data)
         return data.price
 
-    def get_historical_prices(self, symbol, start_date: date, end_date: date) -> dict:
+    def get_historical_prices(self, symbol, **kwargs):
         """Get historical daily close prices for a date range."""
+
+        if "datatype" in kwargs:
+            datatype = kwargs["datatype"]
+            response_data = self.get_api_data(
+                function="TIME_SERIES_DAILY",
+                symbol=symbol,
+                outputsize="full",
+                datatype=datatype,
+            )
+            return response_data
 
         response_data = self.get_api_data(
             function="TIME_SERIES_DAILY", symbol=symbol, outputsize="compact"
@@ -57,9 +80,7 @@ class AlphaVantageProvider(DataProviderInterface):
 
         data = AlphaVantageTimeSeriesDaily(**response_data)
         historical_prices = {
-            daily_date: data.close
-            for daily_date, data in data.time_series.items()
-            if start_date <= daily_date <= end_date
+            daily_date: data.close for daily_date, data in data.time_series.items()
         }
 
         return historical_prices
