@@ -24,32 +24,31 @@ class AlphaVantageProvider(DataProviderInterface):
         self._base_url = settings.DATA_PROVIDER_URL.get("ALPHA_VANTAGE")
 
     def get_api_data(
-        self, function: str, symbol: str, **kwargs
+        self, function: str, symbol: str, return_raw: bool = False, **kwargs
     ) -> Union[dict, Response]:
-        """Get API data."""
+        """
+        Get API data.
+
+        Args:
+            function: Alpha Vantage function to call
+            symbol: Stock symbol
+            return_raw: If True, returns the raw Response object, otherwise returns parsed JSON
+            **kwargs: Additional parameters to pass to the API
+        """
         params = {
             "function": function,
             "symbol": symbol,
             "apikey": auth_settings.ALPHA_VANTAGE_API_KEY,
         }
 
-        if "outputsize" in kwargs:
-            params["outputsize"] = kwargs["outputsize"]
-
-        if "datatype" in kwargs:
-            params["datatype"] = kwargs["datatype"]
-            try:
-                response = httpx.get(self._base_url, params=params)
-                response.raise_for_status()
-                return response
-
-            except Exception as e:
-                raise e
+        for param in ["outputsize", "datatype"]:
+            if param in kwargs:
+                params[param] = kwargs[param]
 
         try:
             response = httpx.get(self._base_url, params=params)
             response.raise_for_status()
-            return response.json()
+            return response if return_raw else response.json()
 
         except Exception as e:
             raise e
@@ -65,14 +64,13 @@ class AlphaVantageProvider(DataProviderInterface):
         """Get historical daily close prices for a date range."""
 
         if "datatype" in kwargs:
-            datatype = kwargs["datatype"]
-            response_data = self.get_api_data(
+            return self.get_api_data(
                 function="TIME_SERIES_DAILY",
                 symbol=symbol,
                 outputsize="full",
-                datatype=datatype,
+                return_raw=True,
+                **kwargs
             )
-            return response_data
 
         response_data = self.get_api_data(
             function="TIME_SERIES_DAILY", symbol=symbol, outputsize="compact"
