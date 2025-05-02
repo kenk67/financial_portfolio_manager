@@ -96,3 +96,50 @@
 #             return AlphaVantageProvider(kwargs["api_key"])
 #         else:
 #             raise ValueError(f"Unknown provider type: {provider_type}")
+
+
+# -------------------------------------------------------------------
+#
+
+#
+# from src.financial_portfolio_manager.external_data_provider.alpha_vantage_provider import (
+#     AlphaVantageProvider,
+# )
+#
+# provider = AlphaVantageProvider()
+#
+# data = provider.get_historical_prices(symbol="IBM", datatype="csv")
+#
+# print(data)
+# print(type(data))
+
+#
+# try:
+#     # No body property
+#     print("executing property body")
+#     print(data.body)
+# except Exception as e:
+#     print("No body property")
+#
+# try:
+#     # In binary mode, the content is a bytes object
+#     print("executing property content")
+#     print(data.content)
+# except Exception as e:
+#     print("No content property")
+#
+#
+# try:
+#     # In binary mode, the content is a bytes object
+#     print("executing property read")
+#     print(data.read())
+# except Exception as e:
+#     print("No content property")
+#
+#
+# try:
+#     # No JSON property
+#     print("executing property json")
+#     print(data.json())
+# except Exception as e:
+#     print("No JSON property")
